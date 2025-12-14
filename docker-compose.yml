@@ -1,42 +1,51 @@
-version: "3.9"
+version: '3.8'
 
 services:
-
-  postgres:
-    image: postgres:15
-    container_name: postgres
-    environment:
-      POSTGRES_DB: auth_db
-      POSTGRES_USER: auth_user
-      POSTGRES_PASSWORD: auth_pass
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   api-gateway:
-    build: ./api-gateway
+    build: ./api_gateway
     ports:
-      - "8000:8000"
+      - "8900:8900"
     depends_on:
       - auth-service
       - security-broker
+      - threat-intelligence
+      - monitoring-service
+    networks:
+      - microservices-net
+    restart: unless-stopped
 
   auth-service:
-    build: ./auth-service
-    environment:
-      DATABASE_URL: postgresql://auth_user:auth_pass@postgres:5432/auth_db
-    depends_on:
-      - postgres
+    build: ./auth_service
+    ports:
+      - "8901:8901"
+    networks:
+      - microservices-net
+    restart: unless-stopped
 
   security-broker:
-    build: ./security-broker
-
-  monitoring-service:
-    build: ./monitoring-service
+    build: ./security_broker
+    ports:
+      - "8902:8902"
+    networks:
+      - microservices-net
+    restart: unless-stopped
 
   threat-intelligence:
-    build: ./threat-intelligence
+    build: ./threat_intelligence
+    ports:
+      - "8903:8903"
+    networks:
+      - microservices-net
+    restart: unless-stopped
 
-volumes:
-  postgres_data:
+  monitoring-service:
+    build: ./monitoring_service
+    ports:
+      - "8905:8905"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+networks:
+  microservices-net:
+    driver: bridge
