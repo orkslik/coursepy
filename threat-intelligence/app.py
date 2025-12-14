@@ -245,4 +245,18 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8903)
+    uvicorn.run(app, host="0.0.0.0", port=8903)from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI(title="Threat Intelligence")
+
+threats = ["SC123456"]  # заблокированные smart-карты
+
+class ThreatCheckRequest(BaseModel):
+    smartcard_id: str
+
+@app.post("/check_threat")
+def check_threat(data: ThreatCheckRequest):
+    if data.smartcard_id in threats:
+        return {"threat_detected": True}
+    return {"threat_detected": False}

@@ -1,51 +1,14 @@
-version: '3.8'
+version: "3.9"
 
 services:
   api-gateway:
-    build: ./api_gateway
+    build: ./api-gateway
     ports:
-      - "8900:8900"
+      - "8000:8000"
     depends_on:
       - auth-service
-      - security-broker
-      - threat-intelligence
-      - monitoring-service
-    networks:
-      - microservices-net
-    restart: unless-stopped
 
   auth-service:
-    build: ./auth_service
+    build: ./auth-service
     ports:
-      - "8901:8901"
-    networks:
-      - microservices-net
-    restart: unless-stopped
-
-  security-broker:
-    build: ./security_broker
-    ports:
-      - "8902:8902"
-    networks:
-      - microservices-net
-    restart: unless-stopped
-
-  threat-intelligence:
-    build: ./threat_intelligence
-    ports:
-      - "8903:8903"
-    networks:
-      - microservices-net
-    restart: unless-stopped
-
-  monitoring-service:
-    build: ./monitoring_service
-    ports:
-      - "8905:8905"
-    networks:
-      - microservices-net
-    restart: unless-stopped
-
-networks:
-  microservices-net:
-    driver: bridge
+      - "8001:8001"
